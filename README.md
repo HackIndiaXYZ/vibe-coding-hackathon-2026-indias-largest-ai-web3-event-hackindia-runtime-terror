@@ -136,7 +136,7 @@ Used extensively in rural health settings, these instruments are:
 
 ## 4. Solution Overview
 
-**Vikaas** (Hindi/Marathi: विकास — meaning "growth" or "development") is an **offline-first, AI-powered, multilingual mobile application** designed for frontline childcare workers operating within India's Anganwadi and ASHA ecosystem.
+**Vikaas** (Hindi/Marathi: विकास — meaning "growth" or "development") is currently implemented as an **AI-powered, multilingual Web Dashboard & Assessment portal (Phase 1)**, with plans to expand to a native **multilingual mobile application (Phase 2)** designed for frontline childcare workers operating within India's Anganwadi and ASHA ecosystem.
 
 It transforms the developmental assessment process from a subjective, paper-based activity into a **structured, intelligent, language-inclusive digital workflow** that works reliably even in the most resource-constrained environments.
 
@@ -637,6 +637,18 @@ flowchart LR
 
 ## 10. Tech Stack
 
+### 🚀 Phase 1: Current Web Prototype
+| Layer | Technology | Version | Justification |
+|---|---|---|---|
+| Frontend Core | HTML5, JavaScript (ES6+), CSS3 | — | Standard, lightweight, highly compatible across devices |
+| Styling | TailwindCSS | 4.x | Fast, modern utility-first CSS styling integrated via Vite |
+| Build System | Vite | 5.x | High-performance frontend build tool and local dev server |
+| Charts & Visualization | Chart.js | 4.x | Lightweight, responsive radar and progress charts |
+| Backend & Database | Supabase (PostgreSQL) | — | Real-time database, authentication, and simplified backend APIs |
+| AI / LLM Orchestration | OpenAI (GPT-4o-mini) | — | Real-time multilingual analysis, domain scoring, and activity recommendations |
+| Icons | FontAwesome | 6.x | Clean visual cues for low-literacy user assistance |
+
+### 📱 Phase 2: Planned Mobile Application & Dedicated Backend
 | Layer | Technology | Version | Justification |
 |---|---|---|---|
 | Mobile Frontend | Flutter | 3.x | Cross-platform, excellent Indic font support, smooth offline UX |
@@ -980,8 +992,56 @@ Additionally, Vikaas supports India's **National Digital Health Mission (NDHM)**
 
 ## 21. Installation Guide
 
-### Prerequisites
+### 🚀 Phase 1: Current Web Prototype (Vite / HTML / JS / CSS)
 
+#### Prerequisites
+- **Node.js**: Version 18.x or 20+ (with npm)
+- **Supabase**: Account & database setup (optional, falling back to mock localStorage if not provided)
+- **OpenAI API Key**: Required for the real AI Analysis (GPT-4o-mini)
+
+#### Setup Steps
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/HackIndiaXYZ/vibe-coding-hackathon-2026-indias-largest-ai-web3-event-hackindia-runtime-terror.git
+   cd vibe-coding-hackathon-2026-indias-largest-ai-web3-event-hackindia-runtime-terror
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment Variables**
+   Create a `.env` file in the root directory:
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` and fill in your Supabase details and OpenAI API credentials:
+   ```env
+   VITE_SUPABASE_URL=https://your-supabase-project.supabase.co
+   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   VITE_OPENAI_API_KEY=your-openai-api-key
+   ```
+
+4. **Start the Development Server**
+   ```bash
+   npm run dev
+   ```
+   The application will run locally and open automatically at `http://localhost:3000`.
+
+5. **Build for Production**
+   ```bash
+   npm run build
+   ```
+
+---
+
+### 📱 Phase 2: Planned Mobile Application & Dedicated Backend (Roadmap)
+
+The full architecture including a Flutter mobile application, FastAPI backend, and on-device ML pipeline is planned for **Phase 2**. Below is the deployment guide for when these components are implemented.
+
+#### Prerequisites
 | Tool | Version | Install |
 |---|---|---|
 | Flutter SDK | 3.19+ | [flutter.dev](https://flutter.dev/docs/get-started/install) |
@@ -989,118 +1049,61 @@ Additionally, Vikaas supports India's **National Digital Health Mission (NDHM)**
 | Python | 3.11+ | [python.org](https://python.org) |
 | PostgreSQL | 15+ | [postgresql.org](https://postgresql.org) or Supabase |
 | Android Studio | Hedgehog+ | [developer.android.com](https://developer.android.com/studio) |
-| Node.js (optional) | 20+ | For admin tooling |
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-org/vikaas.git
-cd vikaas
-```
-
-### 2. Backend Setup
-
+#### 1. Backend Setup
 ```bash
 cd backend
-
-# Create and activate virtual environment
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Configure environment
 cp .env.example .env
-# Edit .env with your PostgreSQL connection string, Firebase credentials,
-# Twilio API keys, and AWS credentials
-
-# Run database migrations
 alembic upgrade head
-
-# Seed developmental milestone data
 python scripts/seed_milestones.py
-
-# Start the FastAPI server
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-The API documentation will be available at `http://localhost:8000/docs`
-
-### 3. ML Model Preparation
-
+#### 2. ML Model Preparation
 ```bash
 cd ml
-
-# Install ML dependencies
 pip install -r requirements_ml.txt
-
-# Train the risk classification model
 python train/train_gbdt.py --config configs/gbdt_v1.yaml
-
-# Export to ONNX and convert to TFLite
 python export/export_tflite.py --model models/gbdt_v1.pkl --output assets/
-
-# Validate TFLite model
-python export/validate_tflite.py --model assets/risk_model.tflite
 ```
 
-### 4. Flutter App Setup
-
+#### 3. Flutter App Setup
 ```bash
 cd mobile
-
-# Install Flutter dependencies
 flutter pub get
-
-# Configure Firebase
-# Place google-services.json in android/app/
-# Place GoogleService-Info.plist in ios/Runner/ (if targeting iOS)
-
-# Configure app environment
-cp lib/config/app_config.example.dart lib/config/app_config.dart
-# Edit app_config.dart with your backend API URL
-
-# Place TFLite model
+# Place Google services credentials files in android/app/ or ios/Runner/
 cp ../ml/assets/risk_model.tflite assets/models/
-
-# Run on connected Android device
 flutter run
-
-# Build release APK
-flutter build apk --release --split-per-abi
-```
-
-### 5. Running Tests
-
-```bash
-# Backend tests
-cd backend && pytest tests/ -v --cov=app
-
-# Flutter tests
-cd mobile && flutter test
-
-# Integration tests
-cd mobile && flutter test integration_test/
-```
-
-### 6. Deployment
-
-```bash
-# Deploy backend to AWS EC2 (using provided Ansible playbook)
-cd infra
-ansible-playbook -i inventory/prod deploy.yml
-
-# Or deploy with Docker
-docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ---
 
 ## 22. Folder Structure
 
+### 🚀 Phase 1: Current Web Prototype Directory Structure
 ```
 vikaas/
+│
+├── .env.example                     # Template file for environment configurations
+├── .gitignore                       # Specified untracked files to ignore
+├── LICENSE                          # MIT License
+├── README.md                        # Project documentation (this file)
+├── index.html                       # Entry point SPA (observe, reports, supervisor views)
+├── script.js                        # Client-side routing, state, Supabase & OpenAI integration
+├── style.css                        # Styling (custom + Tailwind CSS v4 directives)
+├── vite.config.js                   # Vite dev server and plugin configurations
+├── package.json                     # NPM dependency registry and script definitions
+└── package-lock.json                # Strict locks for node_modules dependencies
+```
+
+---
+
+### 📱 Phase 2: Planned Mobile App & Dedicated Backend Structure (Roadmap)
+```
+vikaas/ (Phase 2 Expansion)
 │
 ├── mobile/                          # Flutter mobile application
 │   ├── lib/
