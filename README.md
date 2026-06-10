@@ -1268,6 +1268,6 @@ The name *Vikaas* — विकास — means growth. Not just the growth of t
 ---
 
 *For partnership, pilot deployment, or government collaboration inquiries:*  
-
+📧 `team@vikaas.in` | 🌐 `vikaas.in` | 📱 `+91-XXXXXXXXXX`
 
 </div>
