@@ -1017,20 +1017,42 @@ Additionally, Vikaas supports India's **National Digital Health Mission (NDHM)**
    ```bash
    cp .env.example .env
    ```
-   Edit `.env` and fill in your Supabase details and OpenAI API credentials:
+   Edit `.env` and fill in your Supabase details and OpenRouter API key:
    ```env
    VITE_SUPABASE_URL=https://your-supabase-project.supabase.co
    VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
-   VITE_OPENAI_API_KEY=your-openai-api-key
+   VITE_OPENROUTER_API_KEY=your-openrouter-api-key
    ```
 
-4. **Start the Development Server**
+4. **Database Setup (Optional for Supabase Cloud Sync)**
+   If you wish to store observations in a live Supabase database, create an `observations` table using Supabase's SQL editor:
+   ```sql
+   create table observations (
+     id bigint generated always as identity primary key,
+     child_id text not null,
+     worker_id text not null,
+     scores jsonb not null,
+     notes jsonb not null,
+     risk_flags jsonb not null,
+     recommended_activity text,
+     summary text,
+     created_at timestamp with time zone default timezone('utc'::text, now()) not null
+   );
+
+   -- Enable Row Level Security (optional, or disable/bypass for testing)
+   alter table observations enable row level security;
+   create policy "Allow public inserts" on observations for insert with check (true);
+   create policy "Allow public reads" on observations for select using (true);
+   ```
+   *Note: If no Supabase environment variables are provided, the app runs completely offline in Demo Mode using local storage.*
+
+5. **Start the Development Server**
    ```bash
    npm run dev
    ```
    The application will run locally and open automatically at `http://localhost:3000`.
 
-5. **Build for Production**
+6. **Build for Production**
    ```bash
    npm run build
    ```
@@ -1271,6 +1293,6 @@ The name *Vikaas* — विकास — means growth. Not just the growth of t
 ---
 
 *For partnership, pilot deployment, or government collaboration inquiries:*  
-📧 `team@vikaas.in` | 🌐 `vikaas.in` | 📱 `+91-XXXXXXXXXX`
+
 
 </div>
